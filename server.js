@@ -9,7 +9,8 @@ server.use(express.static(('public')))
 //configurando a template engine
 const nunjucks = require("nunjucks")
 nunjucks.configure("./", {
-    express: server
+    express: server,
+    noCache: true, //boolean
 })
 
 //lista de doadores: Vetor ou Array
@@ -42,7 +43,7 @@ const donors = [
 
 //configurar a apresentação da página
 server.get("/", function(req, res) {
-    return res.render("index.html", { valor: { donors } })
+    return res.render("index.html", { donors  })
 })
 
 //ligar o servidor e permitir o acesso na porta 3000
