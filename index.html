@@ -28,7 +28,7 @@
     <header>
         <img 
             class = "logo"
-            src="logo.jpg"
+            src="/logo.jpg"
             alt="Imagem de DOE">
         <h2>A sua doação importa</h2>
         <p>Até 3 vidas com 1 doação</p>
@@ -62,34 +62,24 @@
     </section>
 
     <main>
-        <h2>Últimos <span> doadores </span></h2>
+        <h2>Últimos <span>doadores</span></h2>
 
         <section class="donors">
-            <div class="donor">
-                <div class="blood">AB+</div>
-                <p>Diego Fernandes</p>
-            </div>
-            <div class="donor">
-                <div class="blood">B+</div>
-                <p>Cleiton Souza</p>
-            </div>
-            <div class="donor">
-                <div class="blood">A+</div>
-                <p>Robson Marques</p>
-            </div>
-            <div class="donor">
-                <div class="blood">O+</div>
-                <p>Mayk Brito</p>
-            </div>
+
+            {% for donor in donors %}
+
+                <div class="donor">
+                    <div class="blood">{{donor.blood }}</div>
+                    <p>Diego Fernandes</p>
+
+                </div>
+            {%endfor%}
         </section>
     </main>
 
 
     <footer> Com 🖤 RocketSeat</footer>
 
-    <script src="script.js"></script>
+    <script src="/script.js"></script>
 </body>
-
-
-
 </html>
