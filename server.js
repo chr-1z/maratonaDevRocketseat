@@ -2,9 +2,23 @@
 const express = require("express")
 const server = express()
 
+//habilitar o body do formulário
+server.use(express.urlencoded({ extended: true}))
 
 //configurar o servidor para apresentar arquivos estáticos
 server.use(express.static(('public')))
+
+// configurar a conexão com o bd
+const Pool = require('pg').Pool
+const db = new Pool({
+    user: 'postgres',
+    password: 'C01230123',
+    host: 'localhost',
+    port: 5432,
+    database: 'doe'
+
+})
+
 
 //configurando a template engine
 const nunjucks = require("nunjucks")
@@ -13,37 +27,45 @@ nunjucks.configure("./", {
     noCache: true, //boolean
 })
 
-//lista de doadores: Vetor ou Array
-const donors = [
-    {
-        name: "Diego Fernandes",
-        blood: "AB+"
-    },
-    {
-        name: "Diego Fernandes",
-        blood: "AB+"
-    },
-    {
-        name: "Diego Fernandes",
-        blood: "AB+"
-    },
-    {
-        name: "Diego Fernandes",
-        blood: "AB+"
-    },
-]
+server.post("/", function(req, res){
+    //pegar dados do formulário
+    const name = req.body.name
+    const email = req.body.email
+    const blood = req.body.blood
+
+    if (name == "" || email == "" || blood == ""){
+        return res.send("Todos os campos são obrigatórios! ")
+    }
 
 
 
+    //coloco valores dentro do banco de dados
+    const query = `
+        INSERT INTO donors ("name", "email", "blood")
+        VALUES ($1, $2, $3)`
+
+    const values = [name, email, blood]
+    
+    
+    db.query(query, values, function(err){
+        // fluxo de erro
+        if (err) return res.send("erro no banco de dados.")
+        
+        // fluxo ideal 
+        return res.redirect("/")
+    })
 
 
-
-
-
+})
 
 //configurar a apresentação da página
 server.get("/", function(req, res) {
-    return res.render("index.html", { donors  })
+    db.query("SELECT * FROM donors", function(err, result) {
+        if (err) return res.send("Erro de banco de dados!")
+
+        const donors = result.rows
+        return res.render("index.html", { donors })
+    })
 })
 
 //ligar o servidor e permitir o acesso na porta 3000
